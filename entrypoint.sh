@@ -17,13 +17,17 @@ repository_author() {
   fi
 
   # Fetch the owner's login (username)
-  owner_login=$(gh repo view "$repo" --json owner --jq '.owner.login' | tr -d '[:space:]')
+  owner_login=$(gh repo view "$repo" --json owner --jq '.owner.login' 2>/dev/null | tr -d '[:space:]' || true)
+
+  if [ -z "$owner_login" ]; then
+      return 0
+  fi
 
   # Fetch the owner's name, remove trailing and leading whitespace
-  owner_name=$(gh api "users/$owner_login" --jq '.name' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+  owner_name=$(gh api "users/$owner_login" --jq '.name' 2>/dev/null | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' || true)
 
   # Attempt to fetch the owner's publicly available email
-  owner_email=$(gh api "users/$owner_login" --jq '.email' | tr -d '[:space:]')
+  owner_email=$(gh api "users/$owner_login" --jq '.email' 2>/dev/null | tr -d '[:space:]' || true)
 
   # Check if an email was fetched; if not, use just the name
   if [ -z "$owner_email" ] || [ "$owner_email" = "null" ]; then
@@ -37,7 +41,7 @@ repository_author() {
 
 repository_license() {
   local repo=$1
-  gh api /repos/$repo/license 2>/dev/null | jq -r '.license.key // ""'
+  gh api /repos/$repo/license 2>/dev/null | jq -r '.license.key // ""' || true
 }
 
 GHCR_IMAGE_NAME="ghcr.io/$GITHUB_REPOSITORY"
