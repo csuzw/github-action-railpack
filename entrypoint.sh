@@ -104,6 +104,8 @@ if [ -n "${INPUT_ENV}" ]; then
   done
 fi
 
+export MISE_VERBOSE=1
+
 # Run railpack prepare to generate the build plan
 echo "Running railpack prepare..."
 # Use --plan-out to save the JSON plan to a file
@@ -195,8 +197,6 @@ else
 
   echo "Executing RailPack build command via docker buildx:"
   echo "$BUILD_CMD"
-  
-  export -p
   
   eval "$BUILD_CMD"
 fi
