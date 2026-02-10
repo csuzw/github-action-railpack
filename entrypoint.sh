@@ -108,12 +108,16 @@ echo "Running railpack prepare..."
 # Use --plan-out to save the JSON plan to a file
 railpack prepare --verbose "${PREPARE_ARGS[@]}" --plan-out "$RAILPACK_PLAN_FILE" "$INPUT_CONTEXT"
 
-# Write out plan file
-echo "$(<$RAILPACK_PLAN_FILE)"
+# Prepare secret args
+SECRET_ARGS=()
+for secret in $(jq '.secrets.[]' $RAILPACK_PLAN_FILE); do
+  SECRET_ARGS+=("--secret" "id=$secret")
+done
 
 # Build docker buildx command
 COMMON_ARGS="--build-arg BUILDKIT_SYNTAX=ghcr.io/railwayapp/railpack-frontend"
 COMMON_ARGS="$COMMON_ARGS -f $RAILPACK_PLAN_FILE"
+COMMON_ARGS="$COMMON_ARGS ${SECRET_ARGS[*]}"
 
 # Add labels
 for label in "${LABELS[@]}"; do
