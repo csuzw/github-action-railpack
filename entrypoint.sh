@@ -104,7 +104,7 @@ if [ -n "${INPUT_ENV}" ]; then
   done
 fi
 
-export MISE_VERBOSE=1
+export MISE_VERBOSE=0
 
 # Run railpack prepare to generate the build plan
 echo "Running railpack prepare..."
