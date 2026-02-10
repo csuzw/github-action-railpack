@@ -97,7 +97,7 @@ fi
 # Prepare environment variables to pass to railpack
 PREPARE_ARGS=()
 if [ -n "${INPUT_ENV}" ]; then
-  IFS=',' read -ra ENVS <<<"$INPUT_ENV"
+  IFS='|' read -ra ENVS <<<"$INPUT_ENV"
   for env_var in "${ENVS[@]}"; do
     PREPARE_ARGS+=("--env" "$env_var")
   done
