@@ -109,8 +109,9 @@ echo "Running railpack prepare..."
 railpack prepare --verbose "${PREPARE_ARGS[@]}" --plan-out "$RAILPACK_PLAN_FILE" "$INPUT_CONTEXT"
 
 # Prepare secret args
+SECRETS=$(jq '.secrets.[]' $RAILPACK_PLAN_FILE)
 SECRET_ARGS=()
-for secret in $(jq '.secrets.[]' $RAILPACK_PLAN_FILE); do
+for secret in $SECRETS; do
   SECRET_ARGS+=("--secret" "id=$secret")
 done
 
@@ -194,6 +195,10 @@ else
   echo "Executing RailPack build command via docker buildx:"
   echo "$BUILD_CMD"
 
+  for secret in $SECRETS; do
+    export $secret
+  done
+  export -p
   eval "$BUILD_CMD"
 fi
 
