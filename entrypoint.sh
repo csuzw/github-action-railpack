@@ -106,7 +106,7 @@ fi
 # Run railpack prepare to generate the build plan
 echo "Running railpack prepare..."
 # Use --plan-out to save the JSON plan to a file
-railpack prepare "${PREPARE_ARGS[@]}" --plan-out "$RAILPACK_PLAN_FILE" "$INPUT_CONTEXT"
+railpack prepare --verbose "${PREPARE_ARGS[@]}" --plan-out "$RAILPACK_PLAN_FILE" "$INPUT_CONTEXT"
 
 # Build docker buildx command
 COMMON_ARGS="--build-arg BUILDKIT_SYNTAX=ghcr.io/railwayapp/railpack-frontend"
