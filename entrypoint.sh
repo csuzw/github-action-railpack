@@ -100,6 +100,7 @@ if [ -n "${INPUT_ENV}" ]; then
   IFS='|' read -ra ENVS <<<"$INPUT_ENV"
   for env_var in "${ENVS[@]}"; do
     PREPARE_ARGS+=("--env" "$env_var")
+    export $env_var
   done
 fi
 
@@ -194,11 +195,9 @@ else
 
   echo "Executing RailPack build command via docker buildx:"
   echo "$BUILD_CMD"
-
-  for secret in $SECRETS; do
-    export $secret
-  done
+  
   export -p
+  
   eval "$BUILD_CMD"
 fi
 
